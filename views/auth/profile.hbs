@@ -1,0 +1,127 @@
+<h1>Profile</h1>
+
+<form action="/createProfile" enctype="multipart/form-data" method="post">
+  <input type="file" name="image" />
+  <br>
+  <hr>
+  <h2>Birthdate</h2>
+  <label for="day"> Day
+    <input type="Number" name="day" id="day">
+  </label>
+  <br>
+  <label for="month"> Month
+    <select name="month" id="month">
+      <option value="1"> January</option>
+      <option value="2">February</option>
+      <option value="3"> March</option>
+      <option value="4">April</option>
+      <option value="5"> May</option>
+      <option value="6">June</option>
+      <option value="7"> July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10"> October</option>
+      <option value="11">November</option>
+      <option value="12"> December</option>
+    </select>
+  </label>
+  <br>
+  <label for="year"> Year
+    <input type="Number" name="year" id="year">
+  </label>
+  <br>
+  <label for="hour"> Hour (24 hour format)
+    <input type="Number" name="hour" id="hour" placeholder="Example: 9, 18">
+  </label>
+  <br>
+  <label for="minutes"> Minutes
+    <input type="Number" name="minutes" id="minutes" placeholder="Example: 24, 3">
+  </label>
+  <br>
+
+  <label for="place"> Place of birth
+    <input type="text" name="place" id="place">
+  </label>
+  <div id="map" style="width: 400px; height: 300px"></div>
+
+  <hr>
+  <h2>Profile information</h2>
+  <label for="username"> Username
+    <input type="text" name="username" id="username">
+  </label>
+  <br>
+
+  <label for="gender"> Gender
+    <select name="gender" id="gender">
+      <option value="male"> Male</option>
+      <option value="female">Female</option>
+      <option value="other"> Other</option>
+    </select>
+  </label>
+  <br>
+
+  <label for="plan"> Suscription plan
+    <select name="plan" id="plan">
+      <option value="basic"> basic</option>
+      <option value="super">Super</option>
+    </select>
+  </label>
+  <br>
+
+{{!-- $ npm install cloudinary multer multer-storage-cloudinary --}}
+  <label for="profilePicture">Show us your best picture:</label>
+  <input type="file" name="profilePicture" id="profilePicture" class="form-control-file" />
+
+  <input type="submit" />
+
+
+  <script src="/javascript/map.js"></script>
+
+</form>
+
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1IjoiaXNhZmVycmFyYSIsImEiOiJja2hjbnB5aHkwMm4yMnJycnJzNjZ6bWYwIn0.7s8wi3l0DnRJskfCjlmXOg';
+  var map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/streets-v11"
+  });
+
+  const gc = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+
+  })
+
+  let mapi = gc.on('result', e => {
+    const { result: { center } } = e
+    const coordinates =[center[0], center[1]]
+    console.log(coordinates)
+    return coordinates
+  })
+  map.addControl(gc);
+
+
+  if (navigator.geolocation) {
+    // Get current position
+    // The permissions dialog will pop up
+    navigator.geolocation.getCurrentPosition(function (position) {
+      // Create an object to match Mapbox's Lat-Lng array format
+      const center = [
+        position.coords.longitude,
+        position.coords.latitude,
+
+      ];
+      console.log('center: ', center)
+      // User granted permission
+      // Center the map in the position we got
+    }, function () {
+      // If something goes wrong
+      console.log('Error in the geolocation service.');
+    });
+  } else {
+    // Browser says: Nah! I do not support this.
+    console.log('Browser does not support geolocation.');
+  }
+
+
+</script>
