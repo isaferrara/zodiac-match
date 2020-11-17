@@ -1,13 +1,12 @@
 <h1>Profile</h1>
-
-<form action="/createProfile" enctype="multipart/form-data" method="post">
-  <input type="file" name="image" />
-  <br>
   <hr>
-  <h2>Birthdate</h2>
+    <br>
+
+<form action="/create-profile"  method="post">
   <label for="day"> Day
-    <input type="Number" name="day" id="day">
+    <input type="number" name="day" id="day"/>
   </label>
+      
   <br>
   <label for="month"> Month
     <select name="month" id="month">
@@ -25,24 +24,25 @@
       <option value="12"> December</option>
     </select>
   </label>
-  <br>
+  <br> --}}
+
   <label for="year"> Year
-    <input type="Number" name="year" id="year">
+    <input type="number" name="year" id="year">
   </label>
+
   <br>
   <label for="hour"> Hour (24 hour format)
-    <input type="Number" name="hour" id="hour" placeholder="Example: 9, 18">
+    <input type="number" name="hour" id="hour" placeholder="Example: 9, 18">
   </label>
   <br>
   <label for="minutes"> Minutes
-    <input type="Number" name="minutes" id="minutes" placeholder="Example: 24, 3">
+    <input type="number" name="minutes" id="minutes" placeholder="Example: 24, 3">
   </label>
   <br>
 
   <label for="place"> Place of birth
-    <input type="text" name="place" id="place">
-  </label>
   <div id="map" style="width: 400px; height: 300px"></div>
+  </label>
 
   <hr>
   <h2>Profile information</h2>
@@ -68,19 +68,15 @@
   </label>
   <br>
 
-{{!-- $ npm install cloudinary multer multer-storage-cloudinary --}}
   <label for="profilePicture">Show us your best picture:</label>
   <input type="file" name="profilePicture" id="profilePicture" class="form-control-file" />
-
-  <input type="submit" />
-
-
-  <script src="/javascript/map.js"></script>
-
+<br>
+<button type="submit">submit</button>
 </form>
 
 <script>
-  mapboxgl.accessToken = 'pk.eyJ1IjoiaXNhZmVycmFyYSIsImEiOiJja2hjbnB5aHkwMm4yMnJycnJzNjZ6bWYwIn0.7s8wi3l0DnRJskfCjlmXOg';
+
+  mapboxgl.accessToken ='pk.eyJ1IjoiaXNhZmVycmFyYSIsImEiOiJja2hjbnB5aHkwMm4yMnJycnJzNjZ6bWYwIn0.7s8wi3l0DnRJskfCjlmXOg';
   var map = new mapboxgl.Map({
     container: "map",
     style: "mapbox://styles/mapbox/streets-v11"
@@ -94,8 +90,18 @@
 
   let mapi = gc.on('result', e => {
     const { result: { center } } = e
-    const coordinates =[center[0], center[1]]
+    const coordinates =[
+    center[0], 
+    center[1]]
     console.log(coordinates)
+     var query = 'https://api.mapbox.com/v4/examples.4ze9z6tv/tilequery/' + coordinates[0] + ',' + coordinates[1] + '.json?access_token=' + 'pk.eyJ1IjoiaXNhZmVycmFyYSIsImEiOiJja2hjbnB5aHkwMm4yMnJycnJzNjZ6bWYwIn0.7s8wi3l0DnRJskfCjlmXOg';
+    $.ajax({
+      method: 'GET',
+      url: query,
+    }).done(function(data){ 
+    var userTimezone = data.features[0].properties.TZID;
+    console.log('dataaaa',data)
+    });
     return coordinates
   })
   map.addControl(gc);
@@ -122,6 +128,5 @@
     // Browser says: Nah! I do not support this.
     console.log('Browser does not support geolocation.');
   }
-
 
 </script>
